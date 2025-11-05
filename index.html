@@ -1,0 +1,669 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Fortune Awaits | Tap & Clay</title>
+    <meta name="description" content="Discover your personal fortune message, ritual, and lucky insights from Tap & Clay. A magical moment of mindfulness crafted just for you.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@400;500;600&family=Cormorant+Garamond:wght@300;400;500;600&family=Space+Grotesk:wght@300;400;500;600&display=swap" rel="stylesheet">
+    
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --coral: 11 85% 66%;
+            --coral-light: 11 90% 75%;
+            --blue: 212 85% 55%;
+            --pink: 330 75% 70%;
+            --lavender: 270 50% 75%;
+            --cream: 40 40% 95%;
+            --beige: 35 25% 85%;
+            --charcoal: 0 0% 20%;
+            
+            --background: var(--cream);
+            --foreground: var(--charcoal);
+            --card: 0 0% 100%;
+            --card-foreground: var(--charcoal);
+            --primary: var(--coral);
+            --primary-foreground: 0 0% 100%;
+            --secondary: var(--blue);
+            --accent: var(--pink);
+            --muted: var(--beige);
+            --muted-foreground: 0 0% 40%;
+            --border: 35 20% 80%;
+        }
+
+        body {
+            font-family: 'Space Grotesk', sans-serif;
+            background: hsl(var(--background));
+            color: hsl(var(--foreground));
+            background-image: url('data:image/svg+xml,<svg width="100" height="100" xmlns="http://www.w3.org/2000/svg"><circle cx="10" cy="10" r="2" fill="hsl(11, 85%, 66%)" opacity="0.1"/><circle cx="70" cy="50" r="3" fill="hsl(212, 85%, 55%)" opacity="0.1"/><circle cx="40" cy="80" r="2" fill="hsl(330, 75%, 70%)" opacity="0.1"/></svg>');
+            background-size: 200px 200px;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 48rem;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        .language-toggle {
+            position: fixed;
+            top: 1rem;
+            right: 1rem;
+            z-index: 50;
+        }
+
+        .cookie-animation {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 70vh;
+            font-size: 8rem;
+            animation: cookieOpen 1.5s ease-out forwards;
+        }
+
+        @keyframes cookieOpen {
+            0% { transform: scale(1) rotate(0deg); opacity: 1; }
+            50% { transform: scale(1.2) rotate(10deg); }
+            100% { transform: scale(0.8) rotate(360deg); opacity: 0; }
+        }
+
+        .fortune-content {
+            animation: fadeIn 0.8s ease-in forwards;
+            opacity: 0;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .header {
+            text-align: center;
+            padding-top: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .emoji-decoration {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+            display: inline-block;
+            animation: wiggle 2s ease-in-out infinite;
+        }
+
+        @keyframes wiggle {
+            0%, 100% { transform: rotate(-5deg); }
+            50% { transform: rotate(5deg); }
+        }
+
+        h1 {
+            font-family: 'Caveat', cursive;
+            font-size: 4rem;
+            font-weight: 600;
+            color: hsl(var(--coral));
+            margin-bottom: 0.5rem;
+        }
+
+        .card {
+            background: hsl(var(--card));
+            border: 2px solid hsl(var(--border));
+            border-radius: 1rem;
+            padding: 3rem;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .card::before {
+            content: '✨';
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            font-size: 2rem;
+            opacity: 0.3;
+        }
+
+        .card::after {
+            content: '⭐';
+            position: absolute;
+            bottom: 1rem;
+            left: 1rem;
+            font-size: 1.5rem;
+            opacity: 0.3;
+        }
+
+        blockquote {
+            font-family: 'Cormorant Garamond', serif;
+            font-size: 2rem;
+            font-weight: 400;
+            line-height: 1.6;
+            text-align: center;
+            margin-bottom: 2.5rem;
+            color: hsl(var(--foreground));
+        }
+
+        .section-title {
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.75rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: hsl(var(--muted-foreground));
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .ritual-text {
+            font-size: 1.125rem;
+            text-align: center;
+            color: hsl(var(--foreground) / 0.8);
+            line-height: 1.6;
+            margin-bottom: 2rem;
+        }
+
+        .lucky-details {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 2rem;
+        }
+
+        .lucky-item {
+            text-align: center;
+            padding: 1.5rem;
+            border-radius: 0.75rem;
+            min-width: 140px;
+        }
+
+        .lucky-number {
+            background: linear-gradient(135deg, hsl(var(--coral)) 0%, hsl(var(--coral-light)) 100%);
+            color: white;
+        }
+
+        .lucky-color {
+            background: linear-gradient(135deg, hsl(var(--blue)) 0%, hsl(var(--lavender)) 100%);
+            color: white;
+        }
+
+        .lucky-value {
+            font-family: 'Caveat', cursive;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-top: 0.5rem;
+        }
+
+        .color-swatch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-top: 0.5rem;
+        }
+
+        .color-circle {
+            width: 1.25rem;
+            height: 1.25rem;
+            border-radius: 50%;
+            border: 2px solid white;
+        }
+
+        .another-fortune-section {
+            text-align: center;
+            padding-top: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .share-section {
+            text-align: center;
+            margin-bottom: 3rem;
+        }
+
+        .button-group {
+            display: flex;
+            gap: 0.75rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 1.5rem;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            border: 2px solid hsl(var(--border));
+            border-radius: 0.5rem;
+            background: white;
+            color: hsl(var(--foreground));
+            font-family: 'Space Grotesk', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-decoration: none;
+        }
+
+        .btn:hover {
+            background: hsl(var(--muted));
+            border-color: hsl(var(--foreground) / 0.3);
+            transform: translateY(-2px);
+        }
+
+        .btn-primary {
+            background: hsl(var(--primary));
+            color: hsl(var(--primary-foreground));
+            border-color: hsl(var(--primary));
+        }
+
+        .btn-primary:hover {
+            opacity: 0.9;
+        }
+
+        .discover-section {
+            text-align: center;
+            padding: 3rem 0;
+        }
+
+        .discover-title {
+            font-family: 'Caveat', cursive;
+            font-size: 3rem;
+            color: hsl(var(--coral));
+            margin-bottom: 1rem;
+        }
+
+        .discover-text {
+            font-size: 1rem;
+            color: hsl(var(--muted-foreground));
+            max-width: 32rem;
+            margin: 0 auto 2rem;
+            line-height: 1.6;
+        }
+
+        .btn-cta {
+            background: linear-gradient(135deg, hsl(var(--coral)) 0%, hsl(var(--pink)) 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            font-size: 1rem;
+        }
+
+        .btn-cta:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px -5px hsl(var(--coral) / 0.3);
+        }
+
+        .divider {
+            width: 1px;
+            height: 2rem;
+            background: hsl(var(--border));
+        }
+
+        @media (max-width: 768px) {
+            h1 { font-size: 3rem; }
+            blockquote { font-size: 1.5rem; }
+            .card { padding: 2rem; }
+            .lucky-details { gap: 1rem; }
+            .discover-title { font-size: 2.5rem; }
+        }
+    </style>
+</head>
+<body>
+    <div class="language-toggle">
+        <button class="btn" onclick="toggleLanguage()">
+            <span id="languageLabel">TR</span>
+        </button>
+    </div>
+
+    <div class="container">
+        <div id="cookie" class="cookie-animation">🥠</div>
+        
+        <div id="fortune" class="fortune-content" style="display: none;">
+            <header class="header">
+                <div class="emoji-decoration" id="fortuneEmoji">🌙</div>
+                <h1 id="title">Your Fortune</h1>
+            </header>
+
+            <div class="card">
+                <blockquote id="fortuneMessage">
+                    "The energy you bring today shapes the week ahead."
+                </blockquote>
+
+                <div style="border-top: 1px solid hsl(var(--border)); padding-top: 2rem;">
+                    <p class="section-title" id="ritualTitle">Your Ritual</p>
+                    <p class="ritual-text" id="ritualText">
+                        Light a candle, inhale deeply, and set one small intention.
+                    </p>
+                </div>
+
+                <div class="lucky-details">
+                    <div class="lucky-item lucky-number">
+                        <p class="section-title" style="color: rgba(255,255,255,0.8);" id="luckyNumberTitle">Lucky Number</p>
+                        <p class="lucky-value" id="luckyNumberValue">8</p>
+                    </div>
+                    <div class="lucky-item lucky-color">
+                        <p class="section-title" style="color: rgba(255,255,255,0.8);" id="luckyColorTitle">Lucky Color</p>
+                        <div class="color-swatch">
+                            <div class="color-circle" id="colorCircle"></div>
+                            <span style="font-size: 1.125rem; font-weight: 500;" id="luckyColorName">Sage Green</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="another-fortune-section">
+                <button class="btn btn-primary" onclick="getAnotherFortune()">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    <span id="anotherFortuneBtn">Get Another Fortune</span>
+                </button>
+            </div>
+
+            <div class="share-section">
+                <p class="section-title" id="shareTitle">Share Your Fortune</p>
+                <div class="button-group">
+                    <button class="btn" onclick="share('instagram')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                            <polyline points="16 6 12 2 8 6"></polyline>
+                            <line x1="12" y1="2" x2="12" y2="15"></line>
+                        </svg>
+                        <span id="shareInstagram">Instagram Story</span>
+                    </button>
+                    <button class="btn" onclick="share('whatsapp')">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path>
+                            <polyline points="16 6 12 2 8 6"></polyline>
+                            <line x1="12" y1="2" x2="12" y2="15"></line>
+                        </svg>
+                        <span id="shareFriend">Send to Friend</span>
+                    </button>
+                    <button class="btn" onclick="saveFortune()">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                            <polyline points="7 10 12 15 17 10"></polyline>
+                            <line x1="12" y1="15" x2="12" y2="3"></line>
+                        </svg>
+                        <span id="saveFortune">Save Fortune</span>
+                    </button>
+                </div>
+            </div>
+
+            <div class="discover-section">
+                <h2 class="discover-title" id="discoverTitle">Discover More</h2>
+                <p class="discover-text" id="discoverText">
+                    Loved your message? See our next collections and join The Circle for daily or seasonal fortunes.
+                </p>
+                <a href="https://tapandclay.com" target="_blank" class="btn btn-cta">
+                    <span id="exploreCTA">Explore Tap & Clay →</span>
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Translations
+        const translations = {
+            en: {
+                title: "Your Fortune",
+                ritual: "Your Ritual",
+                luckyNumber: "Lucky Number",
+                luckyColor: "Lucky Color",
+                shareTitle: "Share Your Fortune",
+                shareInstagram: "Instagram Story",
+                shareFriend: "Send to Friend",
+                saveFortune: "Save Fortune",
+                discoverTitle: "Discover More",
+                discoverText: "Loved your message? See our next collections and join The Circle for daily or seasonal fortunes.",
+                exploreCTA: "Explore Tap & Clay →",
+                anotherFortune: "Get Another Fortune",
+                shareToast: "Opening Instagram...",
+                shareDescription: "Share your fortune in your story!",
+                savedToast: "Fortune Saved",
+                savedDescription: "Your fortune has been saved to your browser."
+            },
+            tr: {
+                title: "Falınız",
+                ritual: "Ritüeliniz",
+                luckyNumber: "Şanslı Sayı",
+                luckyColor: "Şanslı Renk",
+                shareTitle: "Falınızı Paylaşın",
+                shareInstagram: "Instagram Story",
+                shareFriend: "Arkadaşa Gönder",
+                saveFortune: "Falı Kaydet",
+                discoverTitle: "Daha Fazlasını Keşfet",
+                discoverText: "Mesajınızı beğendiniz mi? Yeni koleksiyonlarımızı görün ve günlük veya mevsimlik fallar için The Circle'a katılın.",
+                exploreCTA: "Tap & Clay'i Keşfet →",
+                anotherFortune: "Başka Fal Çek",
+                shareToast: "Instagram açılıyor...",
+                shareDescription: "Falınızı hikayenizde paylaşın!",
+                savedToast: "Fal Kaydedildi",
+                savedDescription: "Falınız tarayıcınıza kaydedildi."
+            }
+        };
+
+        // Fortunes data
+        const fortunes = [
+            {
+                message: {
+                    en: "The energy you bring today shapes the week ahead.",
+                    tr: "Bugün getirdiğin enerji, haftayı şekillendirecek."
+                },
+                ritual: {
+                    en: "Light a candle, inhale deeply, and set one small intention.",
+                    tr: "Bir mum yak, derin nefes al ve küçük bir niyet belirle."
+                },
+                luckyNumber: 8,
+                luckyColor: {
+                    en: "Sage Green",
+                    tr: "Adaçayı Yeşili",
+                    hex: "#8b9d83"
+                },
+                emoji: "🌙"
+            },
+            {
+                message: {
+                    en: "Patience today brings clarity tomorrow.",
+                    tr: "Bugünkü sabrın yarın netlik getirecek."
+                },
+                ritual: {
+                    en: "Write down three things you're grateful for before bed.",
+                    tr: "Yatmadan önce minnettar olduğun üç şeyi yaz."
+                },
+                luckyNumber: 3,
+                luckyColor: {
+                    en: "Lavender",
+                    tr: "Lavanta",
+                    hex: "#9d84b7"
+                },
+                emoji: "✨"
+            },
+            {
+                message: {
+                    en: "A creative spark ignites new possibilities.",
+                    tr: "Yaratıcı bir kıvılcım yeni olasılıkları ateşleyecek."
+                },
+                ritual: {
+                    en: "Spend 10 minutes creating something with your hands.",
+                    tr: "Ellerinle bir şeyler yaratmak için 10 dakika ayır."
+                },
+                luckyNumber: 7,
+                luckyColor: {
+                    en: "Coral Pink",
+                    tr: "Mercan Pembesi",
+                    hex: "#f4a896"
+                },
+                emoji: "🎨"
+            },
+            {
+                message: {
+                    en: "Trust the journey, even when the path isn't clear.",
+                    tr: "Yol net olmasa bile yolculuğa güven."
+                },
+                ritual: {
+                    en: "Take a mindful walk and observe the beauty around you.",
+                    tr: "Dikkatli bir yürüyüş yap ve etrafındaki güzelliği gözlemle."
+                },
+                luckyNumber: 5,
+                luckyColor: {
+                    en: "Sky Blue",
+                    tr: "Gök Mavisi",
+                    hex: "#87ceeb"
+                },
+                emoji: "🌈"
+            },
+            {
+                message: {
+                    en: "Your voice matters more than you realize.",
+                    tr: "Sesin fark ettiğinden daha önemli."
+                },
+                ritual: {
+                    en: "Speak a truth you've been holding back today.",
+                    tr: "Bugün sakladığın bir gerçeği söyle."
+                },
+                luckyNumber: 1,
+                luckyColor: {
+                    en: "Amber Gold",
+                    tr: "Kehribar Altını",
+                    hex: "#ffbf00"
+                },
+                emoji: "🗣️"
+            },
+            {
+                message: {
+                    en: "Rest is productive, allow yourself to pause.",
+                    tr: "Dinlenmek üretkendir, kendine ara vermeye izin ver."
+                },
+                ritual: {
+                    en: "Take five deep breaths and let go of one worry.",
+                    tr: "Beş derin nefes al ve bir endişeni bırak."
+                },
+                luckyNumber: 9,
+                luckyColor: {
+                    en: "Soft Cream",
+                    tr: "Yumuşak Krem",
+                    hex: "#fffdd0"
+                },
+                emoji: "🌸"
+            }
+        ];
+
+        // State
+        let currentLanguage = 'en';
+        let currentFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+
+        // Initialize
+        setTimeout(() => {
+            document.getElementById('cookie').style.display = 'none';
+            document.getElementById('fortune').style.display = 'block';
+            updateUI();
+        }, 1600);
+
+        function updateUI() {
+            const t = translations[currentLanguage];
+            
+            // Update translations
+            document.getElementById('title').textContent = t.title;
+            document.getElementById('ritualTitle').textContent = t.ritual;
+            document.getElementById('luckyNumberTitle').textContent = t.luckyNumber;
+            document.getElementById('luckyColorTitle').textContent = t.luckyColor;
+            document.getElementById('shareTitle').textContent = t.shareTitle;
+            document.getElementById('shareInstagram').textContent = t.shareInstagram;
+            document.getElementById('shareFriend').textContent = t.shareFriend;
+            document.getElementById('saveFortune').textContent = t.saveFortune;
+            document.getElementById('discoverTitle').textContent = t.discoverTitle;
+            document.getElementById('discoverText').textContent = t.discoverText;
+            document.getElementById('exploreCTA').textContent = t.exploreCTA;
+            document.getElementById('anotherFortuneBtn').textContent = t.anotherFortune;
+            document.getElementById('languageLabel').textContent = currentLanguage === 'en' ? 'TR' : 'EN';
+            
+            // Update fortune content
+            document.getElementById('fortuneEmoji').textContent = currentFortune.emoji;
+            document.getElementById('fortuneMessage').textContent = `"${currentFortune.message[currentLanguage]}"`;
+            document.getElementById('ritualText').textContent = currentFortune.ritual[currentLanguage];
+            document.getElementById('luckyNumberValue').textContent = currentFortune.luckyNumber;
+            document.getElementById('luckyColorName').textContent = currentFortune.luckyColor[currentLanguage];
+            document.getElementById('colorCircle').style.background = currentFortune.luckyColor.hex;
+        }
+
+        function toggleLanguage() {
+            currentLanguage = currentLanguage === 'en' ? 'tr' : 'en';
+            updateUI();
+        }
+
+        function getAnotherFortune() {
+            // Hide fortune with fade out
+            const fortuneEl = document.getElementById('fortune');
+            fortuneEl.style.opacity = '0';
+            
+            setTimeout(() => {
+                // Show cookie animation
+                document.getElementById('cookie').style.display = 'flex';
+                fortuneEl.style.display = 'none';
+                
+                // Get new random fortune
+                currentFortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+                
+                // Reset cookie animation
+                const cookieEl = document.getElementById('cookie');
+                cookieEl.style.animation = 'none';
+                setTimeout(() => {
+                    cookieEl.style.animation = 'cookieOpen 1.5s ease-out forwards';
+                }, 10);
+                
+                // Hide cookie and show fortune
+                setTimeout(() => {
+                    cookieEl.style.display = 'none';
+                    fortuneEl.style.display = 'block';
+                    fortuneEl.style.opacity = '0';
+                    updateUI();
+                    
+                    // Reset fade in animation
+                    fortuneEl.style.animation = 'none';
+                    setTimeout(() => {
+                        fortuneEl.style.animation = 'fadeIn 0.8s ease-in forwards';
+                    }, 10);
+                }, 1600);
+            }, 300);
+        }
+
+        function share(platform) {
+            const fortuneText = `${currentFortune.message[currentLanguage]} ${currentFortune.emoji}`;
+            const url = "https://tapandclay.com/fortune";
+            const t = translations[currentLanguage];
+
+            if (platform === 'instagram') {
+                alert(t.shareToast + '\n' + t.shareDescription);
+                window.open('https://www.instagram.com/', '_blank');
+            } else if (platform === 'whatsapp') {
+                const whatsappUrl = `https://wa.me/?text=${encodeURIComponent(fortuneText + ' ' + url)}`;
+                window.open(whatsappUrl, '_blank');
+            }
+        }
+
+        function saveFortune() {
+            const t = translations[currentLanguage];
+            const fortune = {
+                message: currentFortune.message[currentLanguage],
+                ritual: currentFortune.ritual[currentLanguage],
+                luckyNumber: currentFortune.luckyNumber,
+                luckyColor: currentFortune.luckyColor[currentLanguage],
+                date: new Date().toISOString()
+            };
+            localStorage.setItem('tapandclay_fortune', JSON.stringify(fortune));
+            alert(t.savedToast + '\n' + t.savedDescription);
+        }
+    </script>
+</body>
+</html>
